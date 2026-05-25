@@ -8,15 +8,27 @@ public:
     string name;
     int age;
     string course;
+    float cgpa;
+    int attendance;
+    float marks;
 };
 
 vector<Student> students;
+
 void addStudent() {
 
     Student s;
 
     cout << "\nEnter ID: ";
     cin >> s.id;
+    for(int i = 0; i < students.size(); i++) {
+
+        if(students[i].id == s.id) {
+
+            cout << "\nID Already Exists\n";
+            return;
+        }
+    }
 
     cin.ignore();
 
@@ -31,6 +43,15 @@ void addStudent() {
     cout << "Enter Course: ";
     getline(cin, s.course);
 
+    cout << "Enter CGPA: ";
+    cin >> s.cgpa;
+
+    cout << "Enter Attendance Percentage: ";
+    cin >> s.attendance;
+
+    cout << "Enter Marks: ";
+    cin >> s.marks;
+
     students.push_back(s);
 
     cout << "\nStudent Added Successfully!\n";
@@ -44,7 +65,7 @@ void viewStudents() {
         return;
     }
 
-    cout << "\n===== STUDENT RECORDS =====\n";
+    cout << "\n========== STUDENT RECORDS ==========\n";
 
     for(int i = 0; i < students.size(); i++) {
 
@@ -54,6 +75,9 @@ void viewStudents() {
         cout << "Name: " << students[i].name << endl;
         cout << "Age: " << students[i].age << endl;
         cout << "Course: " << students[i].course << endl;
+        cout << "CGPA: " << students[i].cgpa << endl;
+        cout << "Attendance: " << students[i].attendance << "%" << endl;
+        cout << "Marks: " << students[i].marks << endl;
     }
 }
 
@@ -69,12 +93,15 @@ void searchStudent() {
 
         if(students[i].id == searchID) {
 
-            cout << "\n===== STUDENT FOUND =====\n";
+            cout << "\n========== STUDENT FOUND ==========\n";
 
             cout << "ID: " << students[i].id << endl;
             cout << "Name: " << students[i].name << endl;
             cout << "Age: " << students[i].age << endl;
             cout << "Course: " << students[i].course << endl;
+            cout << "CGPA: " << students[i].cgpa << endl;
+            cout << "Attendance: " << students[i].attendance << "%" << endl;
+            cout << "Marks: " << students[i].marks << endl;
 
             found = true;
             break;
@@ -111,6 +138,15 @@ void updateStudent() {
 
             cout << "Enter New Course: ";
             getline(cin, students[i].course);
+
+            cout << "Enter New CGPA: ";
+            cin >> students[i].cgpa;
+
+            cout << "Enter New Attendance: ";
+            cin >> students[i].attendance;
+
+            cout << "Enter New Marks: ";
+            cin >> students[i].marks;
 
             cout << "\nStudent Updated Successfully!\n";
 
@@ -152,6 +188,18 @@ void deleteStudent() {
     }
 }
 
+void sortStudents() {
+
+    sort(students.begin(), students.end(),
+
+    [](Student a, Student b) {
+
+        return a.id < b.id;
+    });
+
+    cout << "\nStudents Sorted Successfully!\n";
+}
+
 void saveToFile() {
 
     ofstream file("students.txt");
@@ -162,11 +210,12 @@ void saveToFile() {
         file << students[i].name << endl;
         file << students[i].age << endl;
         file << students[i].course << endl;
+        file << students[i].cgpa << endl;
+        file << students[i].attendance << endl;
+        file << students[i].marks << endl;
     }
-
     file.close();
-
-    cout << "\nData Saved To File Successfully!\n";
+    cout << "\nData Saved Successfully!\n";
 }
 
 void loadFromFile() {
@@ -175,7 +224,6 @@ void loadFromFile() {
 
     if(!file) {
 
-        cout << "\nNo Previous Data Found\n";
         return;
     }
 
@@ -193,15 +241,39 @@ void loadFromFile() {
 
         getline(file, s.course);
 
+        file >> s.cgpa;
+        file >> s.attendance;
+        file >> s.marks;
+
+        file.ignore();
+
         students.push_back(s);
     }
 
     file.close();
-
-    cout << "\nData Loaded Successfully!\n";
 }
 
 int main() {
+
+    string username, password;
+
+    cout << "====================================\n";
+    cout << "     STUDENT MANAGEMENT SYSTEM\n";
+    cout << "====================================\n";
+
+    cout << "\n=========== LOGIN ===========\n";
+
+    cout << "Enter Username: ";
+    cin >> username;
+
+    cout << "Enter Password: ";
+    cin >> password;
+
+    if(username != "admin" || password != "1234") {
+
+        cout << "\nInvalid Username or Password\n";
+        return 0;
+    }
 
     loadFromFile();
 
@@ -218,8 +290,9 @@ int main() {
         cout << "3. Search Student\n";
         cout << "4. Update Student\n";
         cout << "5. Delete Student\n";
-        cout << "6. Save Data To File\n";
-        cout << "7. Exit\n";
+        cout << "6. Sort Students By ID\n";
+        cout << "7. Save Data\n";
+        cout << "8. Exit\n";
 
         cout << "\nEnter Choice: ";
         cin >> choice;
@@ -247,10 +320,14 @@ int main() {
                 break;
 
             case 6:
-                saveToFile();
+                sortStudents();
                 break;
 
             case 7:
+                saveToFile();
+                break;
+
+            case 8:
                 saveToFile();
                 cout << "\nThank You For Using The System!\n";
                 return 0;
